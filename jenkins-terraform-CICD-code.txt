@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+    
+    tools {
+        terraform 'Terraform'
+    
+    }
+    stages {
+        stage('git repo download') {
+            steps {
+                echo 'cloning project codebase'
+                git branch: 'main', url: 'https://github.com/paradination/paradin-infrastructure.git'
+            }
+        }
+        
+        stage ('terraform init'){
+            steps {
+                echo 'initialling terraform init'
+                sh 'terraform init'
+            }
+        }
+        
+        
+        stage ('terraform validate'){
+            steps {
+                sh 'terraform validate'
+
+            }
+        }
+        
+        
+        stage ('terraform plan'){
+            steps {
+                sh 'terraform plan'
+
+            }
+        }
+        
+        stage ('checkov scan'){
+            steps {
+                sh '''
+                
+                sudo pip3 install checkov
+                checkov -d . --skip-check  CKV_AWS_79,CKV_AWS_23,CKV2_AWS_11,CKV2_AWS_12,CKV2_AWS_41
+                
+                '''
+
+            }
+        }
+        
+        
+        stage ('manual approval'){
+            steps {
+                
+                input 'deploy the infrastructure?'
+
+            }
+        }
+        
+        
+        stage ('terraform apply'){
+            steps {
+                echo 'apply of terraform'
+                sh 'terraform apply --auto-approve'
+            }
+        }
+        
+        stage ('terraform destroy'){
+            steps {
+                echo 'apply of terraform'
+                sh 'terraform destroy --auto-approve'
+            }
+        }
+
+        
+    }
+}
