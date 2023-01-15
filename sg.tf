@@ -2,6 +2,7 @@
 resource "aws_security_group" "sg" {
   name        = "dynamic-sg"
   description = "Ingress for Vault"
+  vpc_id = aws_vpc.main-vpc.id
   dynamic "ingress" {
     for_each = var.port-sg
     iterator = port
