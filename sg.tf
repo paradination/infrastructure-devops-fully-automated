@@ -1,5 +1,6 @@
 #security group
 resource "aws_security_group" "sg" {
+  description = "Allow inbound traffic to EC2 from VPC block"
   name        = "dynamic-sg"
   description = "Ingress for Vault"
   vpc_id = aws_vpc.main-vpc.id

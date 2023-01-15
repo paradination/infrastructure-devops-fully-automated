@@ -8,7 +8,6 @@ resource "aws_instance" "ec2" {
   monitoring = true
   ebs_optimized = true
   security_groups = [aws_security_group.sg.id]
-  http_endpoint = "disabled"
   root_block_device {
      encrypted     = true
   }
